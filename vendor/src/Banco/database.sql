@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS aplicacao_has_javascript(
   id bigint NOT NULL AUTO_INCREMENT,
   aplicacao_id bigint NOT NULL,
   javascript_id bigint NOT NULL,
-  ordem int(4) NOT NULL,
+  ordem int(4) NOT NULL COMMENT 'CONTÉM A ORDEM EM QUE O ARQUIVO DEVE SER CARREGADO',
   PRIMARY KEY (id),
   KEY indices (aplicacao_id, javascript_id)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS aplicacao_has_css(
   id bigint NOT NULL AUTO_INCREMENT,
   aplicacao_id bigint NOT NULL,
   css_id bigint NOT NULL,
-  ordem int(4) NOT NULL,
+  ordem int(4) NOT NULL COMMENT 'CONTÉM A ORDEM EM QUE O ARQUIVO DEVE SER CARREGADO',
   PRIMARY KEY (id),
   KEY indices (aplicacao_id, css_id)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS aplicacao_has_html(
   id bigint NOT NULL AUTO_INCREMENT,
   aplicacao_id bigint NOT NULL,
   html_id bigint NOT NULL,
-  ordem int(4) NOT NULL,
+  ordem int(4) NOT NULL COMMENT 'CONTÉM A ORDEM EM QUE O ARQUIVO DEVE SER CARREGADO',
   PRIMARY KEY (id),
   KEY indices (aplicacao_id, html_id)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
