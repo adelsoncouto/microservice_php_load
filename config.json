@@ -2,5 +2,12 @@
 	"name": "load",
 	"description": "Mimifica e carrega arquivos js css e html",
 	"version": "RC-1.0",
-	"service": []
+	"service": [],
+	"mysql":{
+		"host":"",
+		"port":"",
+		"user": "",
+		"pw": "",
+		"db": ""
+	}
 }
