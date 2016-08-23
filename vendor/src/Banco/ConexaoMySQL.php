@@ -11,13 +11,13 @@ class ConexaoMySQL{
 	}
 	public static function getInstance(){
 		if(!isset(self::$instance)){
-			$cfg=json_decode(file_get_contents(__DIR__."/../../config.json"),true);
+			$cfg=json_decode(file_get_contents(__DIR__."/../../../config.json"),true);
 			$mysql=$cfg["mysql"];
 			$host=empty($mysql["host"])?"localhost":$mysql["host"];
 			$port=empty($mysql["port"])?"3306":$mysql["port"];
 			$user=empty($mysql["user"])?"root":$mysql["user"];
 			$pw=empty($mysql["pw"])?"":$mysql["pw"];
-			$db=empty($mysql["db"])?"load":$mysql["db"];
+			$db=empty($mysql["db"])?"service_load":$mysql["db"];
 			
 			self::$instance=new PDO("mysql:host=$host;dbname=$db;port=$port",$user,$pw,array(
 					PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES utf8"
@@ -25,7 +25,14 @@ class ConexaoMySQL{
 			self::$instance->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
 			self::$instance->setAttribute(PDO::ATTR_ORACLE_NULLS,PDO::NULL_EMPTY_STRING);
 			self::$instance->setAttribute(PDO::ATTR_PERSISTENT,true);
+			
+			//cria estrutura do banco se ela ainda não exisitir
+			$sql = file_get_contents(__DIR__."/database.sql");
+			$ps = self::$instance->prepare($sql);
+			$ps->execute();
+			$ps->closeCursor();
 		}
+		
 		
 		return self::$instance;
 	}
