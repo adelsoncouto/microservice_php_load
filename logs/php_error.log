@@ -1,0 +1,5 @@
+[19-Aug-2016 05:42:30 America/Sao_Paulo] PHP Fatal error:  Uncaught Error: Call to undefined method Service\UpdateModelo::start() in E:\sistema\auth\public\api.php:120
+Stack trace:
+#0 {main}
+  thrown in E:\sistema\auth\public\api.php on line 120
+[19-Aug-2016 05:52:32 America/Sao_Paulo] PHP Parse error:  syntax error, unexpected ')', expecting ']' in E:\sistema\auth\vendor\src\Auth.php on line 35
