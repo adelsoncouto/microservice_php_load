@@ -1,7 +1,7 @@
 <?php
-namespace Service\Mimifica;
+namespace Service\Minifica;
 
-class Mimifica{
+class Minifica{
 	
 	public function __construct(){
 		

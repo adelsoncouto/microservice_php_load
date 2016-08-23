@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data-sources>
+	<data-source id="mysql5-156b6935857-f0e4f5b5c2ba3fd" provider="mysql" driver="mysql5" name="MySQL - Homologação 3307" create-date="1471942086596" save-password="true" show-system-objects="true" read-only="false">
+		<connection host="localhost" port="3307" server="" database="" url="jdbc:mysql://localhost:3307/" user="root" password="QhUHOhNUVw5l8w==" home="C:\xampp\mysql" type="dev">
+			<property name="connectTimeout" value="20000"/>
+			<network-handler type="PROXY" id="socks_proxy" enabled="false" user="" save-password="false">
+				<property name="socks-host" value=""/>
+				<property name="socks-port" value="1080"/>
+			</network-handler>
+			<network-handler type="CONFIG" id="mysql_ssl" enabled="false" user="" save-password="false">
+				<property name="ssl.public.key.retrieve" value="false"/>
+				<property name="ssl.verify.server" value="true"/>
+				<property name="ssl.client.cert" value=""/>
+				<property name="ssl.client.key" value=""/>
+				<property name="ssl.ca.cert" value=""/>
+				<property name="ssl.cipher.suites" value=""/>
+				<property name="ssl.require" value="false"/>
+			</network-handler>
+			<network-handler type="TUNNEL" id="ssh_tunnel" enabled="false" user="" save-password="false">
+				<property name="port" value="22"/>
+				<property name="keyPath" value=""/>
+				<property name="host" value=""/>
+				<property name="authType" value="PASSWORD"/>
+			</network-handler>
+			<bootstrap/>
+		</connection>
+	</data-source>
+</data-sources>
