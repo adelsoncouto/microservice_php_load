@@ -1,7 +1,9 @@
 <?php
 namespace Service;
 
-use Service\Mimifica\Mimifica;
+use Service\Load\CarregaCss;
+use Service\Load\CarregaJavaScript;
+use Service\Load\CarregaHtml;
 
 class Load implements Client {
 	protected $_request;
@@ -16,8 +18,8 @@ class Load implements Client {
 		header('Content-Type: text/javascript; charset=UTF-8');
 		header('access-control-allow-origin:*');
 		header('X-Content-Type-Options: nosniff');
-		
-		return $file;
+		$file = new CarregaJavaScript($this->_request["params"]);
+		return $file->carregar();
 	}
 	
 	
@@ -26,7 +28,8 @@ class Load implements Client {
 		header('Content-Type:  text/css');
 		header('access-control-allow-origin:*');
 		header('X-Content-Type-Options: nosniff');
-		return "";
+		$file = new CarregaCss($this->_request["params"]);
+		return $file->carregar();
 	}
 	
 	public function html(){
@@ -34,7 +37,7 @@ class Load implements Client {
 		header('Content-Type: text/html');
 		header('access-control-allow-origin:*');
 		header('X-Content-Type-Options: nosniff');
-		
-		return "";
+		$file = new CarregaHtml($this->_request["params"]);
+		return $file->carregar();
 	}
 }

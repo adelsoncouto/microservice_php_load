@@ -1,5 +1,5 @@
 <?php
-namespace Service\Minifica;
+namespace Service\Load;
 
 class Minifica{
 	
