@@ -33,7 +33,6 @@ class ConexaoMySQL{
 			$ps->closeCursor();
 		}
 		
-		
 		return self::$instance;
 	}
 	

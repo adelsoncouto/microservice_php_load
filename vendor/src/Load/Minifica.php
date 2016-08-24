@@ -16,7 +16,14 @@ class Minifica{
 	 */
 	public static function mimificar($aConteudo){
 		
-		$aConteudo = preg_replace("/\s+/", " ", $aConteudo);
+		//remove comentário inline
+		$aConteudo = preg_replace("/\/\/.+/","", $aConteudo);
+		
+		//remove quebras de linhas e tabulações
+		$aConteudo = preg_replace("/\s+/","", $aConteudo);
+		
+		//remove comentários em bloco
+		$aConteudo = preg_replace("/\/\*.+?\*\//","", $aConteudo);
 		
 		return $aConteudo;
 		

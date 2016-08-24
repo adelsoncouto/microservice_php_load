@@ -8,6 +8,8 @@ class AplicacaoHasCss extends Model{
 	private $id;
 	private $aplicacaoId;
 	private $cssId;
+	private $ordem;
+	private $minificado;
 	
 	/**
 	* Construtor
@@ -33,6 +35,16 @@ class AplicacaoHasCss extends Model{
 	public function getCssId(){
 		return $this->cssId;
 	}
+	public function getOrdem(){
+		return $this->ordem;
+	}
+	/**
+	 * @param bool $isObject [opcional] se true retorna um DateTime
+	 * @return \DateTime
+	 */
+	public function getMinificado($isObject = false){
+		return $isObject?new \DateTime($this->minificado):$this->minificado;
+	}
 	
 	///////SET
 	
@@ -44,6 +56,12 @@ class AplicacaoHasCss extends Model{
 	}
 	public function setCssId($aCssId){
 		$this->cssId = $aCssId;
+	}
+	public function setOrdem($aOrdem){
+		$this->ordem = $aOrdem;
+	}
+	public function setMinificado($aMinificado){
+		$this->minificado = $aMinificado;
 	}
 	/**
 	* Método responsável por retornar uma versão da classe em array
@@ -106,7 +124,9 @@ class AplicacaoHasCss extends Model{
 		$sql = "SELECT 
 					id as id, 
 					aplicacao_id as aplicacaoId, 
-					css_id as cssId 
+					css_id as cssId, 
+					ordem as ordem, 
+					minificado as minificado 
 				FROM 
 					aplicacao_has_css
 				WHERE
@@ -131,7 +151,9 @@ class AplicacaoHasCss extends Model{
 		$sql = "SELECT 
 					id as id, 
 					aplicacao_id as aplicacaoId, 
-					css_id as cssId 
+					css_id as cssId, 
+					ordem as ordem, 
+					minificado as minificado 
 				FROM 
 					aplicacao_has_css
 				WHERE

@@ -8,6 +8,8 @@ class AplicacaoHasHtml extends Model{
 	private $id;
 	private $aplicacaoId;
 	private $htmlId;
+	private $ordem;
+	private $minificado;
 	
 	/**
 	* Construtor
@@ -33,6 +35,16 @@ class AplicacaoHasHtml extends Model{
 	public function getHtmlId(){
 		return $this->htmlId;
 	}
+	public function getOrdem(){
+		return $this->ordem;
+	}
+	/**
+	 * @param bool $isObject [opcional] se true retorna um DateTime
+	 * @return \DateTime
+	 */
+	public function getMinificado($isObject = false){
+		return $isObject?new \DateTime($this->minificado):$this->minificado;
+	}
 	
 	///////SET
 	
@@ -44,6 +56,12 @@ class AplicacaoHasHtml extends Model{
 	}
 	public function setHtmlId($aHtmlId){
 		$this->htmlId = $aHtmlId;
+	}
+	public function setOrdem($aOrdem){
+		$this->ordem = $aOrdem;
+	}
+	public function setMinificado($aMinificado){
+		$this->minificado = $aMinificado;
 	}
 	/**
 	* Método responsável por retornar uma versão da classe em array
@@ -106,7 +124,9 @@ class AplicacaoHasHtml extends Model{
 		$sql = "SELECT 
 					id as id, 
 					aplicacao_id as aplicacaoId, 
-					html_id as htmlId 
+					html_id as htmlId, 
+					ordem as ordem, 
+					minificado as minificado 
 				FROM 
 					aplicacao_has_html
 				WHERE
@@ -131,7 +151,9 @@ class AplicacaoHasHtml extends Model{
 		$sql = "SELECT 
 					id as id, 
 					aplicacao_id as aplicacaoId, 
-					html_id as htmlId 
+					html_id as htmlId, 
+					ordem as ordem, 
+					minificado as minificado 
 				FROM 
 					aplicacao_has_html
 				WHERE

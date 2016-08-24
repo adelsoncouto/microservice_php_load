@@ -46,6 +46,7 @@ CREATE TABLE IF NOT EXISTS aplicacao_has_javascript(
   aplicacao_id bigint NOT NULL,
   javascript_id bigint NOT NULL,
   ordem int(4) NOT NULL COMMENT 'CONTÉM A ORDEM EM QUE O ARQUIVO DEVE SER CARREGADO',
+  minificado datetime DEFAULT NULL COMMENT 'CONTÉM A DATA EM QUE FOI MINIFICADO',
   PRIMARY KEY (id),
   KEY indices (aplicacao_id, javascript_id)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
@@ -55,6 +56,7 @@ CREATE TABLE IF NOT EXISTS aplicacao_has_css(
   aplicacao_id bigint NOT NULL,
   css_id bigint NOT NULL,
   ordem int(4) NOT NULL COMMENT 'CONTÉM A ORDEM EM QUE O ARQUIVO DEVE SER CARREGADO',
+  minificado datetime DEFAULT NULL COMMENT 'CONTÉM A DATA EM QUE FOI MINIFICADO',
   PRIMARY KEY (id),
   KEY indices (aplicacao_id, css_id)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
@@ -64,6 +66,7 @@ CREATE TABLE IF NOT EXISTS aplicacao_has_html(
   aplicacao_id bigint NOT NULL,
   html_id bigint NOT NULL,
   ordem int(4) NOT NULL COMMENT 'CONTÉM A ORDEM EM QUE O ARQUIVO DEVE SER CARREGADO',
+  minificado datetime DEFAULT NULL COMMENT 'CONTÉM A DATA EM QUE FOI MINIFICADO',
   PRIMARY KEY (id),
   KEY indices (aplicacao_id, html_id)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;

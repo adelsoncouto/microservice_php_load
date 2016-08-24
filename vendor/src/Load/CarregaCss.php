@@ -59,7 +59,6 @@ class CarregaCss{
 			if($css->getProtocolo() == 'file'){
 				$file .= file_get_contents($css->getUrl());
 			}
-			
 		}
 		
 		$file = Minifica::mimificar($file);

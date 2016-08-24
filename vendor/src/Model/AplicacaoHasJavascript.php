@@ -8,6 +8,8 @@ class AplicacaoHasJavascript extends Model{
 	private $id;
 	private $aplicacaoId;
 	private $javascriptId;
+	private $ordem;
+	private $minificado;
 	
 	/**
 	* Construtor
@@ -33,6 +35,16 @@ class AplicacaoHasJavascript extends Model{
 	public function getJavascriptId(){
 		return $this->javascriptId;
 	}
+	public function getOrdem(){
+		return $this->ordem;
+	}
+	/**
+	 * @param bool $isObject [opcional] se true retorna um DateTime
+	 * @return \DateTime
+	 */
+	public function getMinificado($isObject = false){
+		return $isObject?new \DateTime($this->minificado):$this->minificado;
+	}
 	
 	///////SET
 	
@@ -44,6 +56,12 @@ class AplicacaoHasJavascript extends Model{
 	}
 	public function setJavascriptId($aJavascriptId){
 		$this->javascriptId = $aJavascriptId;
+	}
+	public function setOrdem($aOrdem){
+		$this->ordem = $aOrdem;
+	}
+	public function setMinificado($aMinificado){
+		$this->minificado = $aMinificado;
 	}
 	/**
 	* Método responsável por retornar uma versão da classe em array
@@ -106,7 +124,9 @@ class AplicacaoHasJavascript extends Model{
 		$sql = "SELECT 
 					id as id, 
 					aplicacao_id as aplicacaoId, 
-					javascript_id as javascriptId 
+					javascript_id as javascriptId, 
+					ordem as ordem, 
+					minificado as minificado 
 				FROM 
 					aplicacao_has_javascript
 				WHERE
@@ -131,7 +151,9 @@ class AplicacaoHasJavascript extends Model{
 		$sql = "SELECT 
 					id as id, 
 					aplicacao_id as aplicacaoId, 
-					javascript_id as javascriptId 
+					javascript_id as javascriptId, 
+					ordem as ordem, 
+					minificado as minificado 
 				FROM 
 					aplicacao_has_javascript
 				WHERE
