@@ -100,7 +100,7 @@ abstract class Model{
 	 * Método responsável por listar com base em um sql
 	 * @param string $aSql sql para ser usando no prepare statement
 	 * @param array $aPrametros paramentros para o execute exemplo: [":id"=>1]
-	 * @return array [obj,obj,...]
+	 * @return  $this->absoluteClassName()[] [obj,obj,...]
 	 */
 	public function listarPorSql($aSql, $aPrametros){
 		$p = ConexaoMySQL::getInstance()->prepare($aSql);
@@ -122,7 +122,7 @@ abstract class Model{
 	 * @param string $aOrderBy exemplo "id desc, nome" ordena pelo id 
 	 * 			decrescente e pelo nome crescente
 	 * @param string $aLimite exemplo "5,8" limita do 5 ao 8
-	 * @return array [obj,obj,...]
+	 * @return $this->absoluteClassName()[] [obj,obj,...]
 	 */
 	public function listarPorWhere(
 			$aWhere = null, 

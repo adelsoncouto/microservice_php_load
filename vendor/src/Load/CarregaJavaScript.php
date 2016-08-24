@@ -1,9 +1,9 @@
 <?php
 namespace Service\Load;
 
+use Service\Model\Aplicacao;
 use Service\Model\AplicacaoHasJavascript;
 use Service\Model\Javascript;
-use Service\Model\Aplicacao;
 
 /**
  * Classe responsável por carregar os arquivos javascript
@@ -35,32 +35,80 @@ class CarregaJavaScript{
 	 * @return string
 	 */
 	public function carregar(){
-		$app = new Aplicacao();
-		$listApp = $app->listarPorWhere("nome=:nome",[":nome"=>$this->aplicacao]);
+		//pega a aplicação
+		$app=new Aplicacao();
+		$listApp=$app->listarPorWhere("nome=:nome",[
+				":nome"=>$this->aplicacao
+		]);
 		
+		//verfica se existe a aplicação
 		if(empty($listApp)){
-			throw new \Exception("Aplicação não cadastrada", -1);
+			throw new \Exception("Aplicação não cadastrada",-1);
 		}
 		
-		$appJs = new AplicacaoHasJavascript();
-		$listAppJs = $appJs->listarPorWhere("aplicacaoId=:appId",[":appId"=>$listApp[0]->getId()],"ordem");
+		//pega a lista de arquivos
+		$appJavascript=new AplicacaoHasJavascript();
 		
-		$file = "";
+		/** @var \Service\Model\AplicacaoHasJavascript[] $listAppJavascript */
+		$listAppJavascript=$appJavascript->listarPorWhere("aplicacaoId=:appId",[
+				":appId"=>$listApp[0]->getId()
+		],"ordem");
 		
-		foreach ($listAppJs as $vJs){
-			$js = new Javascript($vJs->getJavascriptId());
-			
-			if($js->getProtocolo() == 'tcp'){
-				$file .= Curl::get($js->getUrl());
+		//a princípio não é necessário minificar
+		$deveMinificar=false;
+		
+		//lista de url e protocolos para coletar os arquivos se necessário
+		$listUrl=array();
+		
+		foreach($listAppJavascript as $vJavascript){
+				
+			//se o arquivo não foi minificado então será necessário minificar
+			if(empty($vJavascript->getMinificado())){
+				$deveMinificar=true;
 			}
-			
-			if($js->getProtocolo() == 'file'){
-				$file .= file_get_contents($js->getUrl());
+				
+			//seta nova data de minificação/consulta
+			$vJavascript->setMinificado($hoje->format("Y-m-d H:i:s"));
+			$vJavascript->atualizar();
+				
+			//pega os dados do arquivo Javascript
+			$javascript=new Javascript($vJavascript->getJavascriptId());
+			if($javascript->getProtocolo()=='file'){
+				$listUrl[]=[
+						"protocolo"=>$javascript->getProtocolo(),
+						"url"=>$javascript->getUrl()
+				];
 			}
-			
 		}
 		
-		$file = Minifica::mimificar($file);
+		// arquivo dessa aplicação
+		$tmp=__DIR__."/../Tmp/".$app->getId().".js";
+		
+		//arquivo a ser retornado
+		$file="";
+		
+		if($deveMinificar){
+				
+			//abre os arquivos
+			foreach($listUrl as $vPU){
+				if($vPU["protocolo"]=='tcp'){
+					$file.=Curl::get($vPU["url"]);
+				}
+		
+				if($vPU["protocolo"]=='file'){
+					$file.=file_get_contents($vPU["url"]);
+				}
+			}
+				
+			//minifica e salva
+			$file=Minifica::mimificar($file);
+			file_put_contents($tmp,$file);
+		}
+		
+		//se foi minificado então abre o arquivo
+		if(file_exists($tmp)){
+			$file=file_get_contents($tmp);
+		}
 		
 		return $file;
 		
