@@ -100,7 +100,7 @@ abstract class Model{
 	 * Método responsável por listar com base em um sql
 	 * @param string $aSql sql para ser usando no prepare statement
 	 * @param array $aPrametros paramentros para o execute exemplo: [":id"=>1]
-	 * @return  $this->absoluteClassName()[] [obj,obj,...]
+	 * @return array [obj,obj,...]
 	 */
 	public function listarPorSql($aSql, $aPrametros){
 		$p = ConexaoMySQL::getInstance()->prepare($aSql);
@@ -122,7 +122,7 @@ abstract class Model{
 	 * @param string $aOrderBy exemplo "id desc, nome" ordena pelo id 
 	 * 			decrescente e pelo nome crescente
 	 * @param string $aLimite exemplo "5,8" limita do 5 ao 8
-	 * @return $this->absoluteClassName()[] [obj,obj,...]
+	 * @return array [obj,obj,...]
 	 */
 	public function listarPorWhere(
 			$aWhere = null, 
@@ -186,9 +186,9 @@ abstract class Model{
 	 * Método responsável por alimentar o objeto atual com o id informado
 	 * @param int $aId id do objeto
 	 */
-	public function buscarPorId($aId){
-		ConexaoMySQL::objeto($aId, $this, $this->className());
-	}
+// 	public function buscarPorId($aId){
+// 		ConexaoMySQL::objeto($aId, $this, $this->className());
+// 	}
 	
 	/**
 	 * Método responsável por retornar o id da classe no banco

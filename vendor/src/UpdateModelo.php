@@ -31,6 +31,7 @@ class UpdateModelo implements Client{
 				$class=$vv;
 			}
 			$atributos=$this->atributo($class);
+			$indices=$this->indice($class);
 			$attrs[]=$atributos;
 			
 			file_put_contents(__DIR__."/Model/".$class.".php","<?php
@@ -109,6 +110,7 @@ class ".$class." extends Model{
 	}
 					
 	".$this->buscaPorParent($class,$atributos)."
+	".$this->buscaPorIndice($class,$indices, $atributos)."
 }");
 			$outro=("
 
@@ -270,15 +272,70 @@ class ".$class." extends Model{
 			if(preg_match("/_id$/",$v['field'])){
 				$parent=preg_replace("/(.+?)_id$/","$1",$v['field']);
 				
-				$txt.="\n\t"."\n\t/**"."\n\t* Método responsável por retornar a lista de ".$aClasse." com base no id de ".$parent."\n\t* Em caso de herança deve ser reimplementado"."\n\t* @param int \$a".Util::underlineToMaiuscula($parent,true)."Id id de ".$parent."\n\t* @return \\Service\\Model\\".$aClasse."[]"."\n\t*/"."\n\tpublic function buscarPor".Util::underlineToMaiuscula($parent,true)."(\$a".Util::underlineToMaiuscula($parent,true)."Id){"."\n\t\t\$sql = \"SELECT $colunas \n\t\t\t\tFROM "."\n\t\t\t\t\t".Util::maiusculaToUnderline($aClasse)."\n\t\t\t\tWHERE"."\n\t\t\t\t\t".$v['field']." =:id"."\";"."\n\t\t\$pst = ConexaoMySQL::getInstance()->prepare(\$sql);"."\n\t\t\$pst->execute([\":id\"=>\$a".Util::underlineToMaiuscula($parent,true)."Id]);"."\n\t\t\$result = [];"."\n\t\twhile(\$obj = \$pst->fetchObject(\"\\Service\\Model\\".$aClasse."\")){"."\n\t\t\t\$result[] = \$obj;"."\n\t\t}"."\n\t\t\$pst->closeCursor();\n\t\treturn \$result;"."\n\t}";
+				$txt.="\n\t"."\n\t/**"."\n\t* Método responsável por retornar a lista de ".$aClasse." com base no id de ".$parent."\n\t* Em caso de herança deve ser reimplementado"."\n\t* @param int \$a".Util::underlineToMaiuscula($parent,true)."Id id de ".$parent."\n\t* @return \\Service\\Model\\".$aClasse."[]"."\n\t*/"."\n\tpublic static function buscarPor".Util::underlineToMaiuscula($parent,true)."(\$a".Util::underlineToMaiuscula($parent,true)."Id){"."\n\t\t\$sql = \"SELECT $colunas \n\t\t\t\tFROM "."\n\t\t\t\t\t".Util::maiusculaToUnderline($aClasse)."\n\t\t\t\tWHERE"."\n\t\t\t\t\t".$v['field']." =:id"."\";"."\n\t\t\$pst = ConexaoMySQL::getInstance()->prepare(\$sql);"."\n\t\t\$pst->execute([\":id\"=>\$a".Util::underlineToMaiuscula($parent,true)."Id]);"."\n\t\t\$result = [];"."\n\t\twhile(\$obj = \$pst->fetchObject(\"\\Service\\Model\\".$aClasse."\")){"."\n\t\t\t\$result[] = \$obj;"."\n\t\t}"."\n\t\t\$pst->closeCursor();\n\t\treturn \$result;"."\n\t}";
 			}
 		}
 		return $txt;
 	}
+	
+	private function buscaPorIndice($aClasse, $aIndices, $aAtributos){
+		$txt="";
+	
+		//monta as colunas
+		$colunas="";
+		foreach($aAtributos as $v){
+			if(!empty($colunas)){
+				$colunas.=", \n\t\t\t\t\t";
+			}else{
+				$colunas.="\n\t\t\t\t\t";
+			}
+			$colunas.=$v["field"]." as ".Util::underlineToMaiuscula($v["field"]);
+		}
+		
+		//monta os métodos
+		
+		foreach($aIndices as $v){
+			$campo = $v['columnName'];
+			
+			//se a coluna terminar em _id então já foi feito o método
+			if(preg_match("/_id$/",$campo)){
+				continue;
+			}
+			
+			//comentado com o objetivo de sobrescrever o método id
+			//se terminar em id é padrão
+			/*if($campo == "id"){
+				continue;
+			}*/
+
+			$return = "\\Service\\Model\\".$aClasse;
+			
+			if($v["nonUnique"]){
+				$return .= "[]";
+			}
+			
+			$txt.="\n\t"
+					."\n\t/**"
+					."\n\t* Método responsável por retornar a lista de ".$aClasse." com base no campo ".$campo
+					."\n\t* Em caso de herança deve ser reimplementado"."\n\t* @param string" 
+					."\n\t* @return ".$return
+					."\n\t*/"."\n\tpublic static function buscarPor".Util::underlineToMaiuscula($campo,true)."(\$a".Util::underlineToMaiuscula($campo,true)."){"
+					."\n\t\t\$sql = \"SELECT $colunas \n\t\t\t\tFROM "."\n\t\t\t\t\t".Util::maiusculaToUnderline($aClasse)."\n\t\t\t\tWHERE"."\n\t\t\t\t\t".$campo." =:campo"."\";"
+					."\n\t\t\$pst = ConexaoMySQL::getInstance()->prepare(\$sql);"
+					."\n\t\t\$pst->execute([\":campo\"=>\$a".Util::underlineToMaiuscula($campo,true)."]);"
+					."\n\t\t\$result = [];"
+					."\n\t\twhile(\$obj = \$pst->fetchObject(\"\\Service\\Model\\".$aClasse."\")){"
+					."\n\t\t\t\$result[] = \$obj;"."\n\t\t}"
+					."\n\t\t\$pst->closeCursor();\n\t\treturn \$result;"."\n\t}";
+		}
+		return $txt;
+	}
+	
 	private function set($aAtributos){
 		$txt="";
 		foreach($aAtributos as $v){
-			$txt.="\n\tpublic function set".Util::underlineToMaiuscula($v['field'],true)."(\$a".Util::underlineToMaiuscula($v['field'],true)."){\n\t\t\$this->".Util::underlineToMaiuscula($v['field'])." = \$a".Util::underlineToMaiuscula($v['field'],true).";
+			$coment="\n\n\t/**\n\t* ".$v["comment"]."\n\t*/";
+			$txt.=$coment."\n\tpublic function set".Util::underlineToMaiuscula($v['field'],true)."(\$a".Util::underlineToMaiuscula($v['field'],true)."){\n\t\t\$this->".Util::underlineToMaiuscula($v['field'])." = \$a".Util::underlineToMaiuscula($v['field'],true).";
 	}";
 		}
 		return $txt;
@@ -287,38 +344,32 @@ class ".$class." extends Model{
 		$txt="";
 		
 		foreach($aAtributos as $v){
-			$coment='';
+			$coment="\n\n\t/**\n\t* ".$v["comment"];
 			$return='$this->'.Util::underlineToMaiuscula($v['field']);
 			$param="";
 			if($v["type"]=="date"){
 				$param='$isObject = false';
 				$return='$isObject?new \DateTime('.$return.'):'.$return;
-				$coment='
-	/**
+				$coment.='
 	 * @param bool $isObject [opcional] se true retorna um DateTime
-	 * @return \DateTime
-	 */';
+	 * @return \DateTime';
 			}
 			if($v["type"]=="datetime"){
 				$param='$isObject = false';
 				$return='$isObject?new \DateTime('.$return.'):'.$return;
-				$coment='
-	/**
+				$coment.='
 	 * @param bool $isObject [opcional] se true retorna um DateTime
-	 * @return \DateTime
-	 */';
+	 * @return \DateTime';
 			}
 			if($v["type"]=="time"){
 				$param='$isObject = false';
 				$return='$isObject?new \DateTime('.$return.'):'.$return;
-				$coment='
-	/**
+				$coment.='
 	 * @param bool $isObject [opcional] se true retorna um DateTime
-	 * @return \DateTime
-	 */';
+	 * @return \DateTime';
 			}
 			
-			$txt.=$coment."\n\tpublic function get".Util::underlineToMaiuscula($v['field'],true)."($param){
+			$txt.=$coment."\n\t*/\n\tpublic function get".Util::underlineToMaiuscula($v['field'],true)."($param){
 		return $return;
 	}";
 		}
@@ -332,7 +383,9 @@ class ".$class." extends Model{
 		return $txt;
 	}
 	private function atributo($aClasse){
+		
 		$sql="desc ".Util::maiusculaToUnderline($aClasse);
+		$sql="show full columns from ".Util::maiusculaToUnderline($aClasse);
 		
 		$p=ConexaoMySQL::getInstance()->prepare($sql);
 		$p->execute();
@@ -347,5 +400,24 @@ class ".$class." extends Model{
 		$p->closeCursor();
 		return $result;
 	}
+	
+	private function indice($aClasse){
+	
+		$sql="show index from ".Util::maiusculaToUnderline($aClasse);
+	
+		$p=ConexaoMySQL::getInstance()->prepare($sql);
+		$p->execute();
+		$result=array();
+		while($_row=$p->fetch(\PDO::FETCH_ASSOC)){
+			$_r=array();
+			foreach($_row as $k=>$v){
+				$_r[Util::underlineToMaiuscula($k)]=$v;
+			}
+			$result[]=$_r;
+		}
+		$p->closeCursor();
+		return $result;
+	}
+	
 	
 }
